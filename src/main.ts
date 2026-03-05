@@ -18,15 +18,15 @@ import { Controller } from "./Controller";
 
   const walkPaths = getPaths("walk", 8);
   const idlePaths = getPaths("idle", 6);
-  const deathPaths = getPaths("death", 10);
+  // const deathPaths = getPaths("death", 10);
 
   const assetsWalk = await Assets.load(walkPaths);
   const assetsIdle = await Assets.load(idlePaths);
-  const assetsDeath = await Assets.load(deathPaths);
+  // const assetsDeath = await Assets.load(deathPaths);
 
   const framesWalk = walkPaths.map((path) => assetsWalk[path]);
   const framesIdle = idlePaths.map((path) => assetsIdle[path]);
-  const framesDeath = deathPaths.map((path) => assetsDeath[path]);
+  // const framesDeath = deathPaths.map((path) => assetsDeath[path]);
 
   const sprite = new AnimatedSprite(framesIdle);
 
