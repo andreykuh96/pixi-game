@@ -1,4 +1,5 @@
 import { AnimatedSprite, Application, Assets } from "pixi.js";
+import { Controller } from "./Controller";
 
 (async () => {
   const app = new Application();
@@ -34,34 +35,23 @@ import { AnimatedSprite, Application, Assets } from "pixi.js";
   sprite.position.set(200, 200);
   sprite.animationSpeed = 0.2;
 
-  const keys: Record<string, boolean> = {};
+  const controller = new Controller();
 
-  window.addEventListener("keydown", (e) => {
-    keys[e.code] = true;
-
-    if (e.code === "Space" && state !== "death") {
-      state = "death";
-      sprite.textures = framesDeath;
-      sprite.loop = false;
-      sprite.gotoAndPlay(0);
-    }
-  });
-
-  window.addEventListener("keyup", (e) => {
-    keys[e.code] = false;
-  });
-
-  const SPEED = 3;
+  const SPEED = 10;
 
   let state: "idle" | "walk" | "death" = "idle";
 
   app.ticker.add(() => {
-    const isRightPressed = !!keys["ArrowRight"];
-    const isLeftPressed = !!keys["ArrowLeft"];
+    const isRightPressed = controller.keys.right.pressed;
+    const isLeftPressed = controller.keys.left.pressed;
+    const isTopPressed = controller.keys.top.pressed;
+    const isBottomPressed = controller.keys.bottom.pressed;
 
     if (state !== "death") {
       const nextState: "idle" | "walk" | "death" =
-        isRightPressed || isLeftPressed ? "walk" : "idle";
+        isRightPressed || isLeftPressed || isTopPressed || isBottomPressed
+          ? "walk"
+          : "idle";
 
       if (nextState !== state) {
         state = nextState;
@@ -85,13 +75,23 @@ import { AnimatedSprite, Application, Assets } from "pixi.js";
       } else if (isLeftPressed) {
         sprite.scale.x = -Math.abs(sprite.scale.x);
         sprite.position.x -= SPEED;
+      } else if (isTopPressed) {
+        sprite.position.y -= SPEED;
+      } else {
+        sprite.scale.y = Math.abs(sprite.scale.y);
+        sprite.position.y += SPEED;
       }
 
       const spriteWidth = (sprite.width / 2) * 0.2;
       const minX = spriteWidth;
       const maxX = app.renderer.width - spriteWidth;
 
+      const spriteHeight = (sprite.height / 2) * 0.2;
+      const minY = spriteHeight - 50;
+      const maxY = app.renderer.height - spriteHeight - 120;
+
       sprite.position.x = Math.min(Math.max(sprite.position.x, minX), maxX);
+      sprite.position.y = Math.min(Math.max(sprite.position.y, minY), maxY);
     }
   });
 
