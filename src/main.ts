@@ -1,4 +1,4 @@
-import { Application, Assets, Graphics, Sprite } from "pixi.js";
+import { Application, Assets, Graphics } from "pixi.js";
 import { assetsMap } from "./assetsMap";
 import { Tank } from "./Tank";
 
